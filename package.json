@@ -1,9 +1,12 @@
 {
-  "name": "room-ts",
+  "name": "room-populate",
   "version": "1.0.0",
   "description": "A simple library to pre-populate Room database for Android",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "engines" : {
+    "node" : ">=8.x"
+  },
   "files": [
     "dist/**/*"
   ],

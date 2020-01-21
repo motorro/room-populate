@@ -24,39 +24,26 @@
 
 import {Database} from "sqlite3";
 import {anyFunction, anyString, instance, mock, verify, when} from "ts-mockito";
-import {Schema} from "../src/schema/Schema";
-import * as fs from "fs";
+import {populate} from "../src";
 import * as path from "path";
-import {RoomDbCreator} from "../src/RoomDbCreator";
 
-describe("RoomDbCreator", function () {
+const schemaPath = path.join(__dirname, "data", "1.json");
+
+describe("Populate", function () {
     let dbMock: Database;
-    let schema: Schema;
-    let roomDb: RoomDbCreator;
 
     beforeEach(function () {
-        schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
-
         dbMock = mock();
         when(dbMock.exec(anyString(), anyFunction())).thenCall((_sql, callback) => callback());
-
-        roomDb = new RoomDbCreator(schema, instance(dbMock))
     });
 
-    /**
-     * Checks for rejection
-     * @param block RoomDbCreator call
-     */
-    function createRejectionTest(block: (this: RoomDbCreator) => Promise<void>): () => Chai.PromisedAssertion {
-        return function() {
-            const error = new Error("error");
-            when(dbMock.exec(anyString(), anyFunction())).thenCall((_sql, callback) => callback(error));
-            return block.call(roomDb).should.eventually.be.rejectedWith(error);
+    it("runs template", function () {
+        const insert = "INSERT INTO `playlists` VALUES (1, 'SAMPLE', 'JAZZ')";
+        const populateScript: (this: Database) => Promise<void> = function (this: Database): Promise<void> {
+            this.exec(insert); return Promise.resolve();
         };
-    }
 
-    it("should setup database", function () {
-        return roomDb.setup()
+        return populate(schemaPath, instance(dbMock), populateScript)
             .then(function () {
                 verify(dbMock.exec(
                     "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
@@ -66,17 +53,6 @@ describe("RoomDbCreator", function () {
                     "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b209f33eed89e2c294baacf1bea0ec0f')",
                     anyFunction())
                 ).once();
-            })
-            .should.eventually.be.fulfilled;
-    });
-
-    it("should fail setup if database fails", createRejectionTest(function(this: RoomDbCreator): Promise<void> {
-        return this.setup();
-    }));
-
-    it("should create tables", function () {
-        return roomDb.createTables()
-            .then(function () {
                 verify(dbMock.exec(
                     "CREATE TABLE IF NOT EXISTS `playlists` (`id` INTEGER NOT NULL, `title` TEXT NOT NULL, `genre` TEXT NOT NULL, PRIMARY KEY(`id`))",
                     anyFunction())
@@ -85,37 +61,7 @@ describe("RoomDbCreator", function () {
                     "CREATE TABLE IF NOT EXISTS `songs` (`id` INTEGER NOT NULL, `playlist` INTEGER, `title` TEXT NOT NULL, `author` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`playlist`) REFERENCES `playlists`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
                     anyFunction())
                 ).once();
-            })
-            .should.eventually.be.fulfilled;
-    });
-
-    it("should fail tables if database fails", createRejectionTest(function(this: RoomDbCreator): Promise<void> {
-        return this.createTables();
-    }));
-
-    it("should populate tables", function () {
-        const insert = "INSERT INTO `playlists` VALUES (1, 'SAMPLE', 'JAZZ')";
-        const populate: (this: Database) => Promise<void> = function (this: Database): Promise<void> {
-            this.exec(insert); return Promise.resolve();
-        };
-        return roomDb.populate(populate)
-            .then(function () {
                 verify(dbMock.exec(insert)).once();
-            })
-            .should.eventually.be.fulfilled;
-    });
-
-    it("should fail population if database fails", function() {
-        const error = new Error("error");
-        const populate: (this: Database) => Promise<void> = function (this: Database): Promise<void> {
-            return Promise.reject(error);
-        };
-        return roomDb.populate(populate).should.eventually.be.rejectedWith(error);
-    });
-
-    it("should create indices", function () {
-        return roomDb.createIndices()
-            .then(function () {
                 verify(dbMock.exec(
                     "CREATE INDEX IF NOT EXISTS `playlist_title` ON `playlists` (`title`)",
                     anyFunction())
@@ -128,17 +74,6 @@ describe("RoomDbCreator", function () {
                     "CREATE INDEX IF NOT EXISTS `song_playlist` ON `songs` (`playlist`)",
                     anyFunction())
                 ).once();
-            })
-            .should.eventually.be.fulfilled;
-    });
-
-    it("should fail indices if database fails", createRejectionTest(function(this: RoomDbCreator): Promise<void> {
-        return this.createIndices();
-    }));
-
-    it("should create views", function () {
-        return roomDb.createViews()
-            .then(function () {
                 verify(dbMock.exec(
                     "CREATE VIEW `titles` AS SELECT songs.title FROM songs",
                     anyFunction())
@@ -146,8 +81,5 @@ describe("RoomDbCreator", function () {
             })
             .should.eventually.be.fulfilled;
     });
-
-    it("should fail views if database fails", createRejectionTest(function(this: RoomDbCreator): Promise<void> {
-        return this.createViews();
-    }));
 });
+
