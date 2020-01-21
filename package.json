@@ -1,0 +1,46 @@
+{
+  "name": "room-ts",
+  "version": "1.0.0",
+  "description": "A simple library to pre-populate Room database for Android",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "prepublishOnly": "npm run-script build",
+    "build": "node_modules/.bin/tsc --build tsconfig.json",
+    "test": "node_modules/.bin/mocha --opts ./mocha.opts",
+    "test-report": "node_modules/.bin/mocha --opts ./mocha.opts --reporter mocha-junit-reporter"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:motorro/room-populate.git"
+  },
+  "keywords": [
+    "room",
+    "sqlite3"
+  ],
+  "author": "Motorro <motorro@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/motorro/room-populate/issues"
+  },
+  "homepage": "https://github.com/motorro/room-populate",
+  "dependencies": {
+    "@types/sqlite3": "^3.1.6",
+    "sqlite3": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/chai-as-promised": "^7.1.2",
+    "@types/mocha": "^5.2.7",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "mocha": "^7.0.0",
+    "mocha-junit-reporter": "^1.23.3",
+    "ts-mockito": "^2.5.0",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  }
+}
