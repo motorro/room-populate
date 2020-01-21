@@ -94,7 +94,7 @@ describe("RoomDbCreator", function () {
     }));
 
     it("should populate tables", function () {
-        const insert = "INSERT INTO `playlists` VALUES (1, 'SAMPLE', 'JAZZ')";
+        const insert = "INSERT INTO `playlists` (id, title, genre) VALUES (1, 'SAMPLE', 'JAZZ')";
         const populate: (this: Database) => Promise<void> = function (this: Database): Promise<void> {
             this.exec(insert); return Promise.resolve();
         };
