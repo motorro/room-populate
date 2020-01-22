@@ -13,3 +13,4 @@ deploy:
   api_key: "$NPM_TOKEN"
   on:
     tags: true
+    repo: motorro/room-populate
