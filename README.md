@@ -1,8 +1,12 @@
-# Room-populate
+# Room-populate [![Build Status](https://travis-ci.com/motorro/room-populate.svg?branch=master)](https://travis-ci.com/motorro/room-populate) ![npm](https://img.shields.io/npm/v/room-populate)
 Room-populate is a small Node.js library to pre-populate Room database for Android as described in 
 [Room documentation](https://developer.android.com/training/data-storage/room/prepopulate).
 
 ## Usage
+Installation:
+```shell script
+npm install --save-dev room-populate
+```
 There is a single template-function `populate`:
 ```typescript
     async  function createDb() {
@@ -10,7 +14,7 @@ There is a single template-function `populate`:
 
         await populate("app/scr/schemas/1.json", db, function(this: Database): Promise<void> {
             return new Promise<void>(function(resolve, reject) {
-                this.exec("INSERT INTO `playlists` (id, title, genre) VALUES (1, 'SAMPLE', 'JAZZ')", function(err) {
+                this.exec("INSERT INTO `playlists` (id, title, genre) VALUES (1, 'SAMPLE', 'JAZZ')", (err) => {
                     if (err) {
                         reject(err);
                     } else {
