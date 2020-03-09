@@ -46,10 +46,12 @@ import {RoomDbCreator} from "./RoomDbCreator";
 export async function populate(schemaPath: string, db: Database, populate: (this: Database) => Promise<void>) {
     const creator = new RoomDbCreator(await readSchema(schemaPath), db);
 
+    db.serialize();
     await creator.setup();
     await creator.createTables();
     await creator.populate(populate);
     await creator.createIndices();
     await creator.createViews();
+    db.parallelize();
 }
 
