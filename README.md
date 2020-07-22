@@ -2,6 +2,9 @@
 Room-populate is a small Node.js library to pre-populate Room database for Android as described in 
 [Room documentation](https://developer.android.com/training/data-storage/room/prepopulate).
 
+## Introduction
+See [room-populate-demo](https://github.com/motorro/room-populate-demo) project to see it in action
+
 ## Usage
 Installation:
 ```shell script
