@@ -2,7 +2,12 @@ language: node_js
 node_js:
   - "lts/*"
 
-cache: npm
+cache:
+  npm: true
+  pip: true
+
+before_install:
+  - python -m pip install --quiet --upgrade pip
 
 script:
   - npm test
