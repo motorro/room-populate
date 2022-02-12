@@ -15,9 +15,9 @@
   ],
   "scripts": {
     "prepublishOnly": "npm run-script build",
-    "build": "node_modules/.bin/tsc --build tsconfig.json",
-    "test": "node_modules/.bin/mocha --opts ./mocha.opts",
-    "test-report": "node_modules/.bin/mocha --opts ./mocha.opts --reporter mocha-junit-reporter"
+    "build": "tsc --build tsconfig.json",
+    "test": "mocha test/**/*.spec.{ts,tsx} --colors",
+    "test-report": "mocha test/**/*.spec.{ts,tsx} --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results/results.xml"
   },
   "repository": {
     "type": "git",
@@ -34,19 +34,19 @@
   },
   "homepage": "https://github.com/motorro/room-populate",
   "dependencies": {
-    "@types/sqlite3": "^3.1.6",
+    "@types/sqlite3": "^3.1.8",
     "sqlite3": "^4.2.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.14",
-    "@types/chai-as-promised": "^7.1.3",
-    "@types/mocha": "^5.2.7",
-    "chai": "^4.2.0",
+    "@types/chai": "^4.3.0",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/mocha": "^9.1.0",
+    "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
-    "mocha": "^7.2.0",
-    "mocha-junit-reporter": "^1.23.3",
+    "mocha": "^9.2.0",
+    "mocha-junit-reporter": "^2.0.2",
     "ts-mockito": "^2.6.1",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.9.7"
+    "ts-node": "^10.5.0",
+    "typescript": "^4.5.5"
   }
 }
