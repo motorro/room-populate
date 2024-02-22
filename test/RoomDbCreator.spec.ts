@@ -23,7 +23,7 @@
  */
 
 import {Database} from "sqlite3";
-import {anyFunction, anyString, instance, mock, verify, when} from "ts-mockito";
+import {anyFunction, anyString, instance, mock, verify, when} from "@johanblumenberg/ts-mockito";
 import {Schema} from "../src/schema/Schema";
 import * as fs from "fs";
 import * as path from "path";
@@ -37,7 +37,7 @@ describe("RoomDbCreator", function () {
     beforeEach(function () {
         schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
 
-        dbMock = mock();
+        dbMock = mock(Database);
         when(dbMock.exec(anyString(), anyFunction())).thenCall((_sql, callback) => callback());
 
         roomDb = new RoomDbCreator(schema, instance(dbMock))

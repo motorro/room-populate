@@ -23,7 +23,7 @@
  */
 
 import {Database} from "sqlite3";
-import {anyFunction, anyString, instance, mock, verify, when} from "ts-mockito";
+import {anyFunction, anyString, instance, mock, verify, when} from "@johanblumenberg/ts-mockito";
 import {populate} from "../src";
 import * as path from "path";
 
@@ -33,7 +33,7 @@ describe("Populate", function () {
     let dbMock: Database;
 
     beforeEach(function () {
-        dbMock = mock();
+        dbMock = mock(Database);
         when(dbMock.exec(anyString(), anyFunction())).thenCall((_sql, callback) => callback());
     });
 
