@@ -1,4 +1,4 @@
-# Room-populate [![Build Status](https://travis-ci.com/motorro/room-populate.svg?branch=master)](https://travis-ci.com/motorro/room-populate) ![npm](https://img.shields.io/npm/v/room-populate)
+# Room-populate [![Check](https://github.com/motorro/room-populate/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/motorro/room-populate/actions/workflows/test.yml)![npm](https://img.shields.io/npm/v/room-populate)
 Room-populate is a small Node.js library to pre-populate Room database for Android as described in 
 [Room documentation](https://developer.android.com/training/data-storage/room/prepopulate).
 
