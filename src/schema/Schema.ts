@@ -46,7 +46,7 @@ export namespace room {
         version: number;
         identityHash: string;
         entities: Array<Entity>;
-        views: Array<View>;
+        views?: Array<View>;
         setupQueries: Array<string>;
     }
 
@@ -58,8 +58,8 @@ export namespace room {
         createSql: string;
         fields: Array<Field>;
         primaryKey: PrimaryKey;
-        indices: Array<Index>;
-        foreignKeys: Array<ForeignKey>
+        indices?: Array<Index>;
+        foreignKeys?: Array<ForeignKey>
     }
 
     /**

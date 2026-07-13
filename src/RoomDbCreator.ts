@@ -86,10 +86,15 @@ export class RoomDbCreator {
     async createIndices(): Promise<void> {
         return this.schema.database.entities.reduce<Promise<void>>(
             (soFar, entity) => soFar.then(() => {
-                return entity.indices.reduce(
-                    (soFar, index) => soFar.then(() =>  this.createIndex(entity, index)),
-                    soFar
-                )
+                const indices = entity.indices;
+                if (undefined === indices) {
+                    return Promise.resolve();
+                } else {
+                    return indices.reduce(
+                        (soFar, index) => soFar.then(() =>  this.createIndex(entity, index)),
+                        soFar
+                    )
+                }
             }),
             Promise.resolve()
         );
@@ -99,10 +104,15 @@ export class RoomDbCreator {
      * Creates database views
      */
     async createViews(): Promise<void> {
-        return this.schema.database.views.reduce<Promise<void>>(
-            (soFar, view) => soFar.then(() => this.createView(view)),
-            Promise.resolve()
-        );
+        const views = this.schema.database.views;
+        if (undefined === views) {
+            return Promise.resolve();
+        } else {
+            return views.reduce<Promise<void>>(
+                (soFar, view) => soFar.then(() => this.createView(view)),
+                Promise.resolve()
+            );
+        }
     }
 
     /**

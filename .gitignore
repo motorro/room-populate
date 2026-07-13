@@ -67,3 +67,4 @@ typings/
 
 # Build
 /dist
+/tsconfig.tsbuildinfo

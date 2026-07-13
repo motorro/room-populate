@@ -31,16 +31,11 @@ import {RoomDbCreator} from "../src/RoomDbCreator";
 
 describe("RoomDbCreator", function () {
     let dbMock: Database;
-    let schema: Schema;
     let roomDb: RoomDbCreator;
 
     beforeEach(function () {
-        schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
-
         dbMock = mock(Database);
         when(dbMock.exec(anyString(), anyFunction())).thenCall((_sql, callback) => callback());
-
-        roomDb = new RoomDbCreator(schema, instance(dbMock))
     });
 
     /**
@@ -49,6 +44,9 @@ describe("RoomDbCreator", function () {
      */
     function createRejectionTest(block: (this: RoomDbCreator) => Promise<void>): () => Chai.PromisedAssertion {
         return function() {
+            const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+            const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
             const error = new Error("error");
             when(dbMock.exec(anyString(), anyFunction())).thenCall((_sql, callback) => callback(error));
             return block.call(roomDb).should.eventually.be.rejectedWith(error);
@@ -56,6 +54,9 @@ describe("RoomDbCreator", function () {
     }
 
     it("should setup database", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
         return roomDb.setup()
             .then(function () {
                 verify(dbMock.exec(
@@ -75,6 +76,9 @@ describe("RoomDbCreator", function () {
     }));
 
     it("should create tables", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
         return roomDb.createTables()
             .then(function () {
                 verify(dbMock.exec(
@@ -94,6 +98,9 @@ describe("RoomDbCreator", function () {
     }));
 
     it("should populate tables", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
         const insert = "INSERT INTO `playlists` (id, title, genre) VALUES (1, 'SAMPLE', 'JAZZ')";
         const populate: (this: Database) => Promise<void> = function (this: Database): Promise<void> {
             this.exec(insert); return Promise.resolve();
@@ -106,6 +113,9 @@ describe("RoomDbCreator", function () {
     });
 
     it("should fail population if database fails", function() {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
         const error = new Error("error");
         const populate: (this: Database) => Promise<void> = function (this: Database): Promise<void> {
             return Promise.reject(error);
@@ -114,6 +124,9 @@ describe("RoomDbCreator", function () {
     });
 
     it("should create indices", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
         return roomDb.createIndices()
             .then(function () {
                 verify(dbMock.exec(
@@ -132,11 +145,21 @@ describe("RoomDbCreator", function () {
             .should.eventually.be.fulfilled;
     });
 
+    it("does not fail if indices are not defined", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "2.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
+        return roomDb.createIndices().should.eventually.be.fulfilled;
+    });
+
     it("should fail indices if database fails", createRejectionTest(function(this: RoomDbCreator): Promise<void> {
         return this.createIndices();
     }));
 
     it("should create views", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "1.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
         return roomDb.createViews()
             .then(function () {
                 verify(dbMock.exec(
@@ -145,6 +168,13 @@ describe("RoomDbCreator", function () {
                 ).once();
             })
             .should.eventually.be.fulfilled;
+    });
+
+    it("does not fail if views are not defined", function () {
+        const schema = JSON.parse(fs.readFileSync(path.join(__dirname, "data", "3.json"), { encoding: "utf8"})) as Schema;
+        const roomDb = new RoomDbCreator(schema, instance(dbMock));
+
+        return roomDb.createViews().should.eventually.be.fulfilled;
     });
 
     it("should fail views if database fails", createRejectionTest(function(this: RoomDbCreator): Promise<void> {
