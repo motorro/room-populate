@@ -30,7 +30,7 @@ import {Schema} from "./Schema";
  */
 export async function readSchema(schemaPath: string): Promise<Schema> {
     return  new Promise(function (resolve, reject) {
-        readFile(schemaPath, { encoding: "utf8" }, (err, data) => {
+        readFile(schemaPath, { encoding: "utf8" }, (err: NodeJS.ErrnoException | null, data: string) => {
             if (err) {
                 reject(err);
             } else {
