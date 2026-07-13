@@ -1,3 +1,4 @@
-require: ts-node/register
+node-option:
+  - "import=tsx"
 file:
   - test/mocha-globals.js
